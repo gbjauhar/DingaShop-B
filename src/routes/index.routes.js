@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { registerClient, loginClient } from '../controllers/auth.controllers.js';
+import { registerClient, loginClient } from '../controllers/users.controllers.js';
 import { exitSession, updateSession } from '../controllers/session.controller.js';
 import getCatalog from '../controllers/product.controllers.js';
 

@@ -17,13 +17,13 @@ export async function updateSession(req, res) {
   const { user } = res.locals;
 
   try {
-    const token = uuid();
+    const newToken = uuid();
 
     await sessionsCollection.updateOne({
       userId: user._id,
-    }, { $set: { token } });
+    }, { $set: { token: newToken } });
 
-    return res.sendStatus(201);
+    return res.status(200).send({ token: newToken });
   } catch (err) {
     return res.status(500).json({ error: err });
   }
