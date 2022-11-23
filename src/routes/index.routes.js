@@ -1,5 +1,5 @@
 import express from 'express';
-import { exitSession } from '../controllers/session.controller.js';
+import { exitSession, updateSession } from '../controllers/session.controller.js';
 import { registerClient, loginClient } from '../controllers/users.controllers.js';
 import validateToken from '../middlewares/auth.middlewares.js';
 import { validateBodyRegister, validateLogin, validateNewRegister } from '../middlewares/user.middlewares.js';
@@ -19,5 +19,7 @@ routes.post('/sign-in', validateLogin, loginClient);
 routes.use(validateToken);
 
 routes.delete('/session', exitSession);
+
+routes.put('/session', updateSession);
 
 export default routes;
