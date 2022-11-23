@@ -14,7 +14,7 @@ export default async function validateToken(req, res, next) {
     const user = await usersCollection.findOne({ _id: session.userId });
     if (!user) return res.status(401).json({ error: NO_USER_FOUND });
 
-    req.user = user;
+    res.locals.user = user;
   } catch (err) {
     return res.status(500).send({ error: err });
   }

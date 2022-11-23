@@ -6,7 +6,7 @@ export default async function exitSession(req, res) {
   try {
     await sessionsCollection.deleteOne({ userId: user._id });
 
-    return res.sendStatus(201);
+    return res.sendStatus(200);
   } catch (err) {
     return res.status(500).json({ error: err });
   }
