@@ -1,6 +1,6 @@
 import express from 'express';
-import registerClient from '../controllers/auth.controllers.js';
-import { validateBodyRegister, validateNewRegister } from '../middlewares/auth.middlewares.js';
+import { registerClient, loginClient } from '../controllers/auth.controllers.js';
+import { validateBodyRegister, validateLogin, validateNewRegister } from '../middlewares/auth.middlewares.js';
 
 const routes = express.Router();
 
@@ -9,5 +9,7 @@ const routes = express.Router();
 const validateRegister = [validateBodyRegister, validateNewRegister];
 
 routes.post('/sign-up', validateRegister, registerClient);
+
+routes.post('/sign-in', validateLogin, loginClient);
 
 export default routes;
