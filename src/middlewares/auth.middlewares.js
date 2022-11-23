@@ -1,52 +1,22 @@
-import bcrypt from 'bcrypt';
-import { EXISTING_USER, NO_USER_FOUND } from '../constants/messages.constants.js';
-import { usersCollection } from '../database/index.js';
-import userSchema from '../models/user.model.js';
+import { usersCollection, sessionsCollection } from '../database/index.js';
+import { NO_USER_FOUND, USER_NOT_LOGGED } from '../constants/messages.constants.js';
 
-export async function validateBodyRegister(req, res, next) {
-  const { body } = req;
+export default async function validateToken(req, res, next) {
+  const { authorization } = req.headers;
 
   try {
-    const { error } = userSchema.validate(body, { abortEarly: false });
+    const token = authorization?.replace('Bearer ', '');
+    if (!token) return res.status(401).send({ error: USER_NOT_LOGGED });
 
-    if (error) {
-      const errors = error.details.map((detail) => detail.message);
-      return res.status(401).send({ error: errors });
-    }
-    res.locals.user = body;
+    const session = await sessionsCollection.findOne({ token });
+    if (!session) return res.status(401).json({ error: USER_NOT_LOGGED });
+
+    const user = await usersCollection.findOne({ _id: session.userId });
+    if (!user) return res.status(401).json({ error: NO_USER_FOUND });
+
+    req.user = user;
   } catch (err) {
-    return res.sendStatus(500);
-  }
-
-  return next();
-}
-
-export async function validateNewRegister(req, res, next) {
-  const { user } = res.locals;
-
-  try {
-    const existingUser = await usersCollection.findOne({ email: user.email });
-    if (existingUser) return res.status(401).send({ message: EXISTING_USER });
-  } catch (err) {
-    return res.sendStatus(500);
-  }
-
-  return next();
-}
-
-export async function validateLogin(req, res, next) {
-  const { email, password } = req.body;
-
-  try {
-    const existingUser = await usersCollection.findOne({ email });
-    if (!existingUser) return res.status(400).send({ error: NO_USER_FOUND });
-
-    const correctPassword = await bcrypt.compare(password, existingUser.password);
-    if (!correctPassword) return res.status(401).json({ error: NO_USER_FOUND });
-
-    res.locals.user = existingUser;
-  } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).send({ error: err });
   }
 
   return next();
