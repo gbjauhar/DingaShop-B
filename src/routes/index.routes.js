@@ -1,11 +1,12 @@
 import express from 'express';
 
-import { registerClient, loginClient } from '../controllers/auth.controllers.js';
+import { registerClient, loginClient } from '../controllers/users.controllers.js';
 import { exitSession, updateSession } from '../controllers/session.controller.js';
-import getCatalog from '../controllers/product.controllers.js';
+import { getCatalog, createProduct } from '../controllers/product.controllers.js';
 
 import validateToken from '../middlewares/auth.middlewares.js';
 import { validateBodyRegister, validateLogin, validateNewRegister } from '../middlewares/user.middlewares.js';
+import productsValidation from '../middlewares/products.middlewares.js';
 
 const routes = express.Router();
 
@@ -18,6 +19,8 @@ routes.post('/sign-up', validateRegister, registerClient);
 routes.post('/sign-in', validateLogin, loginClient);
 
 routes.get('/products', getCatalog);
+
+routes.post('/create', productsValidation, createProduct);
 
 // private routes
 

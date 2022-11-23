@@ -1,13 +1,14 @@
-import pkg from 'mongodb';
+import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
-
-const { MongoClient } = pkg;
 
 dotenv.config();
 
 export default async function connectToMongo() {
   try {
-    const mongoClient = new MongoClient(process.env.MONGO_URI);
+    const mongoClient = new MongoClient(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log('🌀 connected to MongoDB');
     return (await mongoClient.connect()).db('DingaShop');
   } catch (err) {
