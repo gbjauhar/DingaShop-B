@@ -20,7 +20,8 @@ const userSchema = Joi.object({
     .regex(/^\d{3}.\d{3}.\d{3}-\d{2}$/),
 
   photo: Joi.string()
-    .dataUri(),
+    .uri()
+    .regex(/^(http(s):\/\/.)[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)$/),
 
 });
 
