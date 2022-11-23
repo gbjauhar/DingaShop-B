@@ -17,4 +17,6 @@ routes.post('/sign-in', validateLogin, loginClient);
 
 routes.use(validateToken);
 
+routes.delete('/session');
+
 export default routes;
