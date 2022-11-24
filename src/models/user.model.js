@@ -23,6 +23,16 @@ const userSchema = Joi.object({
     .uri()
     .regex(/^(http(s):\/\/.)[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)$/),
 
+  cart: Joi.array()
+    .items(
+      Joi.object({
+        idProduct: Joi.string()
+          .required(),
+
+        date: Joi.string()
+          .required(),
+      }),
+    ),
 });
 
 export default userSchema;

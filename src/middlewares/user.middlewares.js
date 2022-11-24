@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
-import { EXISTING_USER, INCORRECT_AUTH } from '../constants/messages.constants.js';
-import { usersCollection } from '../database/index.js';
+import { ObjectId } from 'mongodb';
+import { EXISTING_USER, INCORRECT_AUTH, NO_PRODUCT_FOUND } from '../constants/messages.constants.js';
+import { productsCollection, usersCollection } from '../database/index.js';
 import userSchema from '../models/user.model.js';
 
 export async function validateBodyRegister(req, res, next) {
@@ -49,5 +50,18 @@ export async function validateLogin(req, res, next) {
     return res.sendStatus(500);
   }
 
+  return next();
+}
+
+export async function validateAddToCart(req, res, next) {
+  const { id } = req.params;
+  try {
+    const existingProduct = productsCollection.findOne({ _id: ObjectId(id) });
+    if (!existingProduct) return res.status(400).send({ error: NO_PRODUCT_FOUND });
+
+    res.locals.id = id;
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
   return next();
 }
