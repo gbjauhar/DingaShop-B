@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import dayjs from 'dayjs';
+import { ObjectId } from 'mongodb';
 import { sessionsCollection, usersCollection } from '../database/index.js';
 
 export async function registerClient(req, res) {
@@ -28,5 +30,45 @@ export async function loginClient(req, res) {
     return res.status(201).send({ token, user });
   } catch (err) {
     return res.status(500).json({ error: err });
+  }
+}
+
+export async function addProductToCart(req, res) {
+  const { user } = res.locals;
+  const { id } = res.locals;
+  try {
+    await usersCollection.updateOne(
+      { _id: user._id },
+      {
+        $push: {
+          cart: {
+            _id: uuid(),
+            idProduct: ObjectId(id),
+            date: dayjs().format('DD/MM/YYYY'),
+          },
+        },
+      },
+    );
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+}
+
+export async function removeProductToCart(req, res) {
+  const { user } = res.locals;
+  const { id } = res.locals;
+  try {
+    await usersCollection.updateOne(
+      { _id: user._id },
+      {
+        $pull: {
+          cart: { _id: id },
+        },
+      },
+    );
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send({ error: err });
   }
 }
