@@ -42,9 +42,28 @@ export async function addProductToCart(req, res) {
       {
         $push: {
           cart: {
+            _id: uuid(),
             idProduct: ObjectId(id),
             date: dayjs().format('DD/MM/YYYY'),
           },
+        },
+      },
+    );
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+}
+
+export async function removeProductToCart(req, res) {
+  const { user } = res.locals;
+  const { id } = res.locals;
+  try {
+    await usersCollection.updateOne(
+      { _id: user._id },
+      {
+        $pull: {
+          cart: { _id: id },
         },
       },
     );
