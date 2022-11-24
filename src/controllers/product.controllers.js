@@ -1,4 +1,5 @@
-import { productsCollection } from '../database/index.js';
+import { ObjectId } from 'mongodb';
+import { productsCollection, salesCollection } from '../database/index.js';
 
 export async function getCatalog(req, res) {
   try {
@@ -19,5 +20,27 @@ export async function createProduct(req, res) {
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
+  }
+}
+
+export async function addToCart(req, res) {
+  const { idUser, idProduct, payment } = req.body;
+  try {
+    const add = await salesCollection.insertOne({ idUser, idProduct, payment });
+    res.sendStatus(add);
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
+  }
+}
+
+export async function deleteFromCart(req, res) {
+  const { idCart } = req.body;
+  try {
+    await salesCollection.deleteOne({ _id: ObjectId(idCart) });
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
   }
 }
