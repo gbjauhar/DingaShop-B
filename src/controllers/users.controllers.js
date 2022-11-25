@@ -72,3 +72,13 @@ export async function removeProductToCart(req, res) {
     return res.status(500).send({ error: err });
   }
 }
+
+export async function getUserCart(req, res) {
+  const { user } = res.locals;
+  try {
+    const { cart } = user;
+    res.send({ cart });
+  } catch {
+    res.send('Não foi encontrado');
+  }
+}

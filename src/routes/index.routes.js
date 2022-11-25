@@ -1,7 +1,7 @@
 import express from 'express';
 
 import {
-  registerClient, loginClient, addProductToCart, removeProductToCart,
+  registerClient, loginClient, addProductToCart, removeProductToCart, getUserCart,
 } from '../controllers/users.controllers.js';
 import { exitSession, updateSession } from '../controllers/session.controller.js';
 import { getCatalog, createProduct } from '../controllers/product.controllers.js';
@@ -41,5 +41,7 @@ routes.put('/session', updateSession);
 routes.delete('/cart/:id', validateRemoveToCart, removeProductToCart);
 
 routes.put('/cart/:id', validateAddToCart, addProductToCart);
+
+routes.get('/cart', validateToken, getUserCart);
 
 export default routes;
