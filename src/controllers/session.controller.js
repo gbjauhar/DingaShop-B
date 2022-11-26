@@ -23,7 +23,7 @@ export async function updateSession(req, res) {
       userId: user._id,
     }, { $set: { token: newToken } });
 
-    return res.status(200).send({ token: newToken });
+    return res.status(200).send({ token: newToken, user });
   } catch (err) {
     return res.status(500).json({ error: err });
   }
