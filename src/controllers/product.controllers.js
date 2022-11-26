@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { productsCollection } from '../database/index.js';
 
 export async function getCatalog(req, res) {
@@ -19,5 +20,16 @@ export async function createProduct(req, res) {
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
+  }
+}
+
+export async function getProduct(req, res) {
+  const { id } = res.locals;
+  try {
+    const product = await productsCollection.find({ _id: ObjectId(id) }).toArray();
+
+    return res.status(200).send({ product });
+  } catch (err) {
+    return res.status(500).send({ error: err });
   }
 }

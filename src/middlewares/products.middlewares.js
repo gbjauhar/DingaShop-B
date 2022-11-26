@@ -1,6 +1,9 @@
+import { ObjectId } from 'mongodb';
 import productSchema from '../models/product.model.js';
+import { productsCollection } from '../database/index.js';
+import { NO_PRODUCT_FOUND } from '../constants/messages.constants.js';
 
-export default function productsValidation(req, res, next) {
+export function productsValidation(req, res, next) {
   const {
     name, image, cost, category, description, review, details, comments,
   } = req.body;
@@ -26,6 +29,20 @@ export default function productsValidation(req, res, next) {
   }
 
   res.locals.product = product;
+
+  return next();
+}
+
+export async function validateGetProduct(req, res, next) {
+  const { id } = req.params;
+  try {
+    const existingProduct = await productsCollection.find({ _id: ObjectId(id) }).toArray();
+    if (existingProduct.length < 1) return res.status(404).send({ error: NO_PRODUCT_FOUND });
+
+    res.locals.id = id;
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
 
   return next();
 }
