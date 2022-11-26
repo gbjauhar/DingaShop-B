@@ -15,6 +15,8 @@ import {
   validateRemoveToCart,
 } from '../middlewares/user.middlewares.js';
 import { productsValidation, validateGetProduct } from '../middlewares/products.middlewares.js';
+import validatePurchase from '../middlewares/sales.middlewares.js';
+import finalizePurchase from '../controllers/sales.controller.js';
 
 const routes = express.Router();
 
@@ -44,6 +46,8 @@ routes.delete('/cart/:id', validateRemoveToCart, removeProductToCart);
 
 routes.put('/cart/:id', validateAddToCart, addProductToCart);
 
-routes.get('/cart', validateToken, getUserCart);
+routes.get('/cart', getUserCart);
+
+routes.post('/purchase', validatePurchase, finalizePurchase);
 
 export default routes;
