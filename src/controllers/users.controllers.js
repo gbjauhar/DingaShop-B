@@ -75,10 +75,15 @@ export async function removeProductToCart(req, res) {
 
 export async function getUserCart(req, res) {
   const { user } = res.locals;
+  const array = [];
+  for (let i = 0; i < user.cart.length; i += 1) {
+    const product = await productsCollection.findOne({ _id: ObjectId(user.cart[i].idProduct) });
+    console.log(product);
+    array.push(product);
+  }
+
   try {
-    const { cart } = user;
-    const catalog = await productsCollection.find().toArray();
-    res.send({ cart, catalog });
+    res.send(array);
   } catch {
     res.send('Não foi encontrado');
   }
