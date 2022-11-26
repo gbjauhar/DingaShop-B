@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
-import { sessionsCollection, usersCollection } from '../database/index.js';
+import { productsCollection, sessionsCollection, usersCollection } from '../database/index.js';
 
 export async function registerClient(req, res) {
   const { user } = res.locals;
@@ -77,7 +77,8 @@ export async function getUserCart(req, res) {
   const { user } = res.locals;
   try {
     const { cart } = user;
-    res.send({ cart });
+    const catalog = await productsCollection.find().toArray();
+    res.send({ cart, catalog });
   } catch {
     res.send('Não foi encontrado');
   }
