@@ -1,13 +1,14 @@
 import express from 'express';
 
 import {
-  registerClient, loginClient, addProductToCart, removeProductToCart, getUserCart,
+  registerClient, loginClient, addProductToCart, removeProductToCart, getUserCart, getUser,
 } from '../controllers/users.controllers.js';
 import { exitSession, updateSession } from '../controllers/session.controller.js';
 import { getCatalog, createProduct, getProduct } from '../controllers/product.controllers.js';
 
 import validateToken from '../middlewares/auth.middlewares.js';
 import {
+  getHistoricPurchaseUser,
   validateAddToCart,
   validateBodyRegister,
   validateLogin,
@@ -47,6 +48,8 @@ routes.delete('/cart/:id', validateRemoveToCart, removeProductToCart);
 routes.put('/cart/:id', validateAddToCart, addProductToCart);
 
 routes.get('/cart', getUserCart);
+
+routes.get('/user', getHistoricPurchaseUser, getUser);
 
 routes.post('/purchase', validatePurchase, finalizePurchase);
 

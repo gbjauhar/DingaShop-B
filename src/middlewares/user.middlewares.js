@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import { EXISTING_USER, INCORRECT_AUTH } from '../constants/messages.constants.js';
-import { productsCollection, usersCollection } from '../database/index.js';
+import { productsCollection, salesCollection, usersCollection } from '../database/index.js';
 import userSchema from '../models/user.model.js';
 
 export async function validateBodyRegister(req, res, next) {
@@ -77,6 +77,18 @@ export async function validateRemoveToCart(req, res, next) {
     if (!existingInCart) return res.sendStatus(404);
 
     res.locals.id = id;
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+  return next();
+}
+
+export async function getHistoricPurchaseUser(req, res, next) {
+  const { user } = res.locals;
+  try {
+    const historic = await salesCollection.find({ 'purchase.idUser': ObjectId(user._id) }).toArray();
+
+    res.locals.historic = historic;
   } catch (err) {
     return res.status(500).send({ error: err });
   }

@@ -88,3 +88,13 @@ export async function getUserCart(req, res) {
     res.send('Não foi encontrado');
   }
 }
+
+export async function getUser(req, res) {
+  const { user, historic } = res.locals;
+  try {
+    delete user.password;
+    return res.status(200).send({ user, historic });
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+}
