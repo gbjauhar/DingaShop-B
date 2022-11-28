@@ -78,7 +78,7 @@ export async function getUserCart(req, res) {
   const array = [];
   for (let i = 0; i < user.cart.length; i += 1) {
     const product = await productsCollection.findOne({ _id: ObjectId(user.cart[i].idProduct) });
-    console.log(product);
+    console.log('chamda para o cart');
     array.push({ ...product, idCart: user.cart[i]._id });
   }
 
